@@ -1,0 +1,17 @@
+@media screen and (max-width: 840px) {
+  .list-prize-won-container {
+    width: 400px;
+  }
+}
+
+@media screen and (max-width: 436px) and (min-width: 360px) {
+  .list-prize-won-container {
+    width: 300px;
+    overflow: auto;
+  }
+
+  .list-prize-won {
+    width: 400px;
+    overflow: auto;
+  }
+}
