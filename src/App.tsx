@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { PRIZES } from "./data/constant";
@@ -6,39 +7,25 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { ListPrizeWon, LuckyWheel, Modal, WinningResult } from "./components";
 import dayjs, { Dayjs } from "dayjs";
 import { getTimeDifference } from "./utils/get-time-difference";
-import { delayedApiCall } from "./api";
-import {
-  ConfigModal,
-  PrizeWon,
-  StyleRotate,
-  User,
-  WinningResultType,
-} from "./types";
+import { ConfigModal, PrizeWon, StyleRotate, WinningResultType } from "./types";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useForm } from "react-hook-form";
-import { db } from "./firebaseConfig";
 import * as XLSX from "xlsx";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { validationSchema } from "./helpers/validationSchema";
+import {
+  addUser,
+  addUserSpinDate,
+  exportUserData,
+  getUserSpinHistory,
+} from "./utils/firebaseOperations";
+import { calculateSpin, randomIndex } from "./utils/spinLogic";
 
 const ID = "luckywheel";
 const CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE = 12;
 const CURRENT_TIME_DURATION_NEEDLE_ROTATE = 0.6;
 
-const schema = yup.object().shape({
-  name: yup.string().required("Họ tên là bắt buộc"),
-  phone: yup
-    .string()
-    .required("Số điện thoại là bắt buộc")
-    .matches(
-      /^(0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/,
-      "Số điện thoại không hợp lệ"
-    ),
-  address: yup.string().required("Địa chỉ là bắt buộc"),
-});
-
 const App: React.FC = () => {
-  // const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState(null);
   const [styleRotate, setStyleRotate] = useState<StyleRotate>({
     deg: 0,
     timingFunc: "ease-in-out",
@@ -78,47 +65,18 @@ const App: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(validationSchema),
     mode: "onChange",
   });
 
   const onSubmit = async (data: any) => {
-    console.log("Dữ liệu hợp lệ:", data);
+    await addUser(data);
+    setUserData(data);
 
-    try {
-      // Thêm dữ liệu vào collection 'users' trong Firestore
-      const docRef = await addDoc(collection(db, "users"), {
-        fullName: data.name,
-        phone: data.phone,
-        address: data.address,
-        createdAt: dayjs().format("DD/MM/YYYY HH:mm:ss"),
-      });
-      console.log("Document written with ID: ", docRef.id);
+    console.log(11, userData);
 
-      setIsUserInfoValid(true);
-      setConfigModal({ ...configModal, openModal: false });
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
-
-  const exportUserData = async (): Promise<User[]> => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      const userData: User[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data() as Omit<User, "id">; // Lấy dữ liệu từ Firestore nhưng không có 'id'
-        userData.push({
-          id: doc.id,
-          ...data,
-        });
-      });
-      console.log("User data: ", userData);
-      return userData;
-    } catch (e) {
-      console.error("Error retrieving user data: ", e);
-      return [];
-    }
+    setIsUserInfoValid(true);
+    setConfigModal({ ...configModal, openModal: false });
   };
 
   const exportToExcel = async () => {
@@ -134,64 +92,73 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isUserInfoValid && countSpin > 0) {
-      handleSpin();
+    // if (isUserInfoValid && countSpin > 0) {
+    if (isUserInfoValid && countSpin > 0 && userData) {
+      handleSpin(userData);
     }
-  }, [isUserInfoValid]);
+  }, [isUserInfoValid, userData]);
 
   /**
    * Function to spin and call api get prize on server
    */
-  const startDate = dayjs("2024-09-09");
-  const endDate = dayjs("2024-09-19");
 
-  const handleSpin = () => {
-    const currentDate = dayjs();
+  const handleSpin = async (formData: any) => {
+    const currentDate = dayjs().format("YYYY-MM-DD");
+    const startDate = dayjs("2024-09-09");
+    const endDate = dayjs("2024-09-19");
+    const currentDateDayjs = dayjs();
 
-    // Kiểm tra điều kiện ngày và giới hạn thời gian
-    if (currentDate.isBefore(startDate) || currentDate.isAfter(endDate)) {
+    // Kiểm tra nếu ngày quay không hợp lệ
+    if (
+      currentDateDayjs.isBefore(startDate) ||
+      currentDateDayjs.isAfter(endDate)
+    ) {
       alert("Vòng quay chỉ diễn ra từ ngày 12/9 đến 19/9.");
       return;
     }
 
-    if (countSpin <= 0) {
-      alert("Bạn đã hết lượt quay");
-      return;
-    }
-
+    // Kiểm tra nếu người chơi chưa nhập thông tin
     if (!isUserInfoValid) {
+      // Hiển thị modal yêu cầu người chơi nhập thông tin
       setConfigModal({ openModal: true, typeModal: "userInfo" });
       return;
     }
 
-    // if (countSpin > 0 && isUserInfoValid) {
-    // if (countSpin > 0) {
+    // Kiểm tra lịch sử quay
+    const userId = formData.phone;
+    const spinHistory = await getUserSpinHistory(userId);
+
+    // Kiểm tra xem đã quay trong ngày chưa
+    if (spinHistory && spinHistory.includes(currentDate)) {
+      alert("Bạn đã quay hôm nay rồi, vui lòng quay lại vào ngày mai!");
+      return;
+    }
+
+    // Kiểm tra nếu đã quay quá 7 ngày
+    if (spinHistory.length >= 7) {
+      alert("Bạn đã quay đủ 7 lần.");
+      return;
+    }
+
+    // Nếu các điều kiện hợp lệ, tiến hành quay
     setSpinning(true);
     setTime(dayjs());
 
-    // Gọi API lấy phần thưởng trúng
-    delayedApiCall()
-      .then((result: number) => {
-        setIndexPrizeWon(result);
-      })
-      .catch((error) => {
-        console.error("Caught error:", error);
-      });
-
+    const result = randomIndex(PRIZES);
+    setIndexPrizeWon(result);
     setCountSpin((prevState) => prevState - 1);
+    calculateSpin(
+      result,
+      dayjs(),
+      styleRotate,
+      setStyleRotate,
+      setTimeNeedleRotate,
+      CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE,
+      CURRENT_TIME_DURATION_NEEDLE_ROTATE
+    );
 
-    let d = styleRotate.deg;
-    // const numberOfPrizes = PRIZES.length;
-
-    // Tính toán số lần xoay để đạt đến phần thưởng
-    d = 80 + (360 - (80 % 360)) + 360 * 10; // Xoay ít nhất 10 vòng trước khi dừng
-    setStyleRotate({
-      timingFunc: "ease-in-out",
-      deg: d,
-      timeDuration: CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE,
-    });
-    setTimeNeedleRotate(CURRENT_TIME_DURATION_NEEDLE_ROTATE);
-    // }
+    // Lưu ngày quay vào Firestore
+    await addUserSpinDate(userId, currentDate);
   };
 
   const alertAfterTransitionEnd = () => {
@@ -367,8 +334,6 @@ const App: React.FC = () => {
 
                 <div>
                   <button
-                    // type="button"
-                    // onClick={handleUserInfoSubmit}
                     type="submit"
                     className="py-2  px-5 w-[100%] rounded-lg bg-[#1A2B57] text-white font-bold btn-shadow-animate"
                   >
@@ -381,7 +346,6 @@ const App: React.FC = () => {
         )}
       </Modal>
 
-      {/* Nút xuất dữ liệu ra file Excel */}
       <button
         onClick={exportToExcel}
         className="py-2 px-5 w-[100%] rounded-lg bg-[#1A2B57] text-white font-bold"

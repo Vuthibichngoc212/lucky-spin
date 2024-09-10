@@ -30,7 +30,6 @@ const LuckyWheel = ({
   const drawWheel = (
     prizes: { name: string; img: string; percentpage: number }[]
   ) => {
-    console.log("drawWheel");
     const num = prizes.length;
     const rotateDeg = 360 / num / 2 + 90; // Tính toán góc xoay
     const turnNum = 1 / num;
