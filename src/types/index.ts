@@ -1,10 +1,10 @@
-export type User = {
-  id: string;
-  fullName: string;
-  phone: string;
-  address: string;
-  createdAt: string;
-};
+// export type User = {
+//   id: string;
+//   fullName: string;
+//   phone: string;
+//   address: string;
+//   createdAt: string;
+// };
 
 export type ConfigModal = {
   openModal: boolean;
