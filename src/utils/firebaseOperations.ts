@@ -20,29 +20,6 @@ export const addUser = async (data: any) => {
   }
 };
 
-// Hàm lấy dữ liệu người dùng từ Firestore
-// export const exportUserData = async (): Promise<any[]> => {
-//   try {
-//     const querySnapshot = await getDocs(collection(db, "spinHistory"));
-//     const userData: any[] = [];
-//     querySnapshot.forEach((doc) => {
-//       const data = doc.data();
-//       userData.push({
-//         id: doc.id,
-//         fullName: data.fullName,
-//         email: data.email,
-//         ip: data.userIp,
-//         date: data.date,
-//         prize: data.prize,
-//       });
-//     });
-//     return userData;
-//   } catch (e) {
-//     console.error("Error retrieving user data: ", e);
-//     return [];
-//   }
-// };
-
 // Thêm ngày quay của người dùng và phần thưởng trúng vào Firestore
 export const addUserSpinDate = async (
   email: string,
@@ -62,19 +39,34 @@ export const addUserSpinDate = async (
   }
 };
 
-// Lấy lịch sử quay của người chơi từ Firestore dựa trên IP
-export const getUserSpinHistory = async (userIp: string) => {
+// Lấy lịch sử quay của người chơi từ Firestore dựa trên email hoặc IP
+export const getUserSpinHistory = async (email: string, ipAddress: string) => {
   try {
-    const q = query(
+    const qEmail = query(
       collection(db, "spinHistory"),
-      where("userIp", "==", userIp) // Lấy lịch sử quay dựa trên IP
+      where("email", "==", email) // Lấy lịch sử quay dựa trên email
     );
-    const querySnapshot = await getDocs(q);
+    const qIp = query(
+      collection(db, "spinHistory"),
+      where("ipAddress", "==", ipAddress) // Lấy lịch sử quay dựa trên IP
+    );
+
+    const [emailSnapshot, ipSnapshot] = await Promise.all([
+      getDocs(qEmail),
+      getDocs(qIp),
+    ]);
+
     const spinDates: string[] = [];
-    querySnapshot.forEach((doc) => {
-      spinDates.push(doc.data().date); // Lưu ngày quay
+
+    emailSnapshot.forEach((doc) => {
+      spinDates.push(doc.data().date); // Lưu ngày quay từ email
     });
-    return spinDates; // Trả về danh sách các ngày quay
+
+    ipSnapshot.forEach((doc) => {
+      spinDates.push(doc.data().date); // Lưu ngày quay từ IP
+    });
+
+    return spinDates; // Trả về danh sách các ngày quay từ cả email và IP
   } catch (e) {
     console.error("Error retrieving spin history: ", e);
     return [];

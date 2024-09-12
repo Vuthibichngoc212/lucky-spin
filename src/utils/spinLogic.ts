@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PRIZES } from "../data/constant";
 import dayjs, { Dayjs } from "dayjs";
@@ -42,8 +41,8 @@ export function calculateSpin(
   styleRotate: StyleRotate,
   setStyleRotate: React.Dispatch<React.SetStateAction<StyleRotate>>,
   setTimeNeedleRotate: React.Dispatch<React.SetStateAction<number>>,
-  CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE: number,
-  CURRENT_TIME_DURATION_NEEDLE_ROTATE: number
+  CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE: number
+  // CURRENT_TIME_DURATION_NEEDLE_ROTATE: number
 ) {
   const timeCallApi = getTimeDifference(time, dayjs());
   let d = styleRotate.deg;

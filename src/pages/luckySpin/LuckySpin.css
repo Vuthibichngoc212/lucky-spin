@@ -1,3 +1,20 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.wheel-container {
+  flex: 2;
+  text-align: center;
+}
+
+.prize-list-container {
+  flex: 1;
+  height: 100vh;
+  overflow: auto;
+}
+
 .menu-list-prize-won {
   display: block;
 }
@@ -41,18 +58,19 @@
   color: rgb(239 68 68);
 }
 
-/* Định nghĩa keyframes cho box-shadow */
 @keyframes onilgapp-pulse-shadow {
   0% {
-    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
+    box-shadow: 0 0 0 0 rgba(90, 26, 208, 0.7); /* Màu mới cho hoạt hình */
   }
   70% {
-    box-shadow: 0 0 10px 10px rgba(79, 70, 229, 0);
+    box-shadow: 0 0 10px 10px rgba(90, 26, 208, 0); /* Màu mới cho hoạt hình */
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+    box-shadow: 0 0 0 0 rgba(90, 26, 208, 0); /* Màu mới cho hoạt hình */
   }
 }
 .btn-shadow-animate {
   animation: onilgapp-pulse-shadow 1.8s infinite;
+  background-color: #5a1ad0;
+  max-width: 200px;
 }

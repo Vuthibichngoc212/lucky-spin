@@ -4,8 +4,8 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Button, Divider } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import HeaderTitle from "../HeaderTitle/HeaderTitle";
 import { useStyles } from "./CRUDModal.styles";
+import HeaderTitle from "../HeaderTitle/HeaderTitle";
 
 interface ModalProps {
   isOpenModal: boolean;
@@ -37,7 +37,10 @@ const CRUDModal = ({
       {...props}
       className={classes.root}
     >
-      <Box className={classes.boxWrapper}>
+      <Box
+        className={classes.boxWrapper}
+        sx={{ minWidth: "250px", maxWidth: "500px" }}
+      >
         <Box sx={{ display: "grid" }}>
           <HeaderTitle
             title={headerTitle}
@@ -72,9 +75,11 @@ const CRUDModal = ({
               sx={{
                 borderRadius: "8px",
                 textTransform: "none",
-                "&.MuiButtonBase-root .MuiButton-root": {
-                  color: "rgb(242, 101, 34",
-                  borderColor: "rgb(242, 101, 34",
+                borderColor: "#5a1ad0",
+                color: "#5a1ad0",
+                "&:hover": {
+                  borderColor: "#5a1ad0",
+                  color: "#5a1ad0",
                 },
               }}
             >
@@ -84,9 +89,15 @@ const CRUDModal = ({
               variant="contained"
               size="medium"
               onClick={onSubmit}
+              className={classes.submitButton}
               sx={{
                 borderRadius: "8px",
                 textTransform: "none",
+                backgroundColor: "#5a1ad0",
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor: "#5a1ad0",
+                },
               }}
             >
               {submitButtonLabel}

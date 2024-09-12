@@ -1,49 +1,49 @@
-import { Nitro } from "../assets";
+import { ImgIp16, Voucher, TonerEveline, BetterLuck, TuiVang } from "../assets";
 
 export const PRIZES = [
   {
     name: "Iphone 16",
-    img: Nitro,
+    img: ImgIp16,
     percentpage: 0, // code để không quay trúng
   },
   {
     name: "Voucher 500k",
-    img: Nitro,
+    img: TuiVang,
     percentpage: 0, // code để không quay trúng
   },
   {
     name: "Voucher 300k",
-    img: Nitro,
+    img: TuiVang,
     percentpage: 0, // code để không quay trúng
   },
   {
     name: "Chúc bạn may mắn lần sau",
-    img: Nitro,
+    img: BetterLuck,
     percentpage: 70, // 70% khách sẽ quay phải ô này
   },
   {
     name: "Voucher 50k",
-    img: Nitro,
+    img: TuiVang,
     percentpage: 5, // tỷ lệ dựa trên số lượng 20 phần quà
   },
   {
     name: "Voucher 20k",
-    img: Nitro,
+    img: TuiVang,
     percentpage: 2.5, // tỷ lệ dựa trên số lượng 10 phần quà
   },
   {
     name: "Voucher giảm 20%",
-    img: Nitro,
+    img: Voucher,
     percentpage: 10, // chương trình đang chạy
   },
   {
     name: "Toner Eveline Magma",
-    img: Nitro,
+    img: TonerEveline,
     percentpage: 12.5, // tỷ lệ dựa trên số lượng 30 phần quà
   },
 ];
 
 export const COLORS = {
   primary_first: "#1A2B57",
-  primary_second: "#C49B60",
+  primary_second: "black",
 };

@@ -5,6 +5,7 @@ import {
   DialogContent,
   Button,
   Divider,
+  IconButton,
   Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -21,16 +22,50 @@ const EventDialog: React.FC<EventDialogProps> = ({
   message,
 }) => {
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ textAlign: "center", fontWeight: "bold" }}>
         Thông báo
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
-      <Box sx={{ gridColumn: "3", textAlign: "end" }}>
-        <CloseIcon onClick={onClose} sx={{ cursor: "pointer" }} />
+      <Divider />
+      <DialogContent
+        sx={{
+          textAlign: "center",
+          padding: "20px !important",
+          "&.MuiDialog-paper": { margin: "0px", padding: "24px" },
+        }}
+      >
+        {message}
+      </DialogContent>
+      <Divider />
+      <Box sx={{ textAlign: "center", padding: "16px" }}>
+        <Button
+          variant="contained"
+          onClick={onClose}
+          sx={{
+            borderRadius: "8px",
+            textTransform: "none",
+            backgroundColor: "#5a1ad0",
+            color: "#fff",
+            "&:hover": {
+              backgroundColor: "#5a1ad0",
+            },
+          }}
+        >
+          Đóng
+        </Button>
       </Box>
-      <Divider sx={{ mb: "1.6rem" }} />
-      <DialogContent>{message}</DialogContent>
-      <Button onClick={onClose}>OK</Button>
     </Dialog>
   );
 };

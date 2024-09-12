@@ -68,6 +68,23 @@ const CustomTextField = ({
             helperText={error?.message ?? ""}
             onChange={onChange}
             {...props}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "&:hover fieldset": {
+                  borderColor: "#5a1ad0",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#5a1ad0",
+                  borderWidth: "2px",
+                },
+              },
+              "& .MuiInput-underline:after": {
+                borderBottomColor: "#5a1ad0",
+              },
+              "& .MuiFilledInput-underline:after": {
+                borderBottomColor: "#5a1ad0",
+              },
+            }}
           />
         </Box>
       )}

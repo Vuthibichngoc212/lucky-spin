@@ -2,7 +2,7 @@ import { memo, useEffect, useRef } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import "./style.css";
 import { COLORS } from "../../data/constant";
-// import centerImage from "../../assets/center.png";
+import centerImage from "../../assets/center.png";
 
 type Props = {
   id: string;
@@ -15,6 +15,8 @@ type Props = {
   prizes: { name: string; img: string; percentpage: number }[];
   timeNeedleRotate: number;
 };
+
+const COLOR = ["#b0061a", "#fed882"];
 
 const LuckyWheel = ({
   id,
@@ -31,7 +33,8 @@ const LuckyWheel = ({
     prizes: { name: string; img: string; percentpage: number }[]
   ) => {
     const num = prizes.length;
-    const rotateDeg = 360 / num / 2 + 90; // Tính toán góc xoay
+    // const rotateDeg = 360 / num / 2 + 90; // Tính toán góc xoay
+    const rotateDeg = (360 / num) * 0.5;
     const turnNum = 1 / num;
     const html = [];
 
@@ -49,18 +52,21 @@ const LuckyWheel = ({
       if (canvasRef.current && container) {
         const ctx = canvasRef.current.getContext("2d")!;
         for (let i = 0; i < num; i++) {
+          // Vẽ phần của vòng quay
           ctx.save();
           ctx.beginPath();
           ctx.translate(250, 250); // Tâm vòng quay
           ctx.moveTo(0, 0);
           ctx.rotate((((360 / num) * i - rotateDeg) * Math.PI) / 180); // Tính góc từng phần thưởng
           ctx.arc(0, 0, 250, 0, (2 * Math.PI) / num, false); // Vẽ phần bánh xe
-          ctx.fillStyle = "#ffffff";
+          ctx.fillStyle = COLOR[i % 2];
           ctx.fill();
-          ctx.lineWidth = 1;
-          ctx.strokeStyle = "#1A2B57";
-          ctx.stroke();
+          // ctx.lineWidth = 1;
+          // ctx.strokeStyle = "#1A2B57";
+          // ctx.stroke();
           ctx.restore();
+
+          const textColor = i % 2 === 0 ? "white" : "black";
 
           const htmlString = `<li class="luckywheel-item"><span style="transform: rotate(${
             i * turnNum
@@ -70,9 +76,9 @@ const LuckyWheel = ({
             i % 2 === 0 ? COLORS.primary_first : COLORS.primary_second
           }" class="luckywheel-item__content"><img src="${
             prizes[i].img
-          }" style="margin: 0 auto" /><div class="text-container"><p class="name-prize" style="color: ${
-            COLORS.primary_second
-          }; margin-top: 5px">${prizes[i].name}</p></div></div></span></li>`;
+          }" style="margin: 0 auto" /><div class="text-container"><p class="name-prize" style="color: ${textColor}; margin-top: 5px">${
+            prizes[i].name
+          }</p></div></div></span></li>`;
 
           html.push(htmlString);
         }
@@ -103,10 +109,6 @@ const LuckyWheel = ({
   useEffect(() => {
     void rotateArrow(spinning, timeNeedleRotate);
   }, [spinning, arrowRef, timeNeedleRotate, rotateArrow]);
-
-  // useEffect(() => {
-  //   void drawWheel(prizes);
-  // }, [prizes]);
 
   useEffect(() => {
     // Chỉ vẽ lại bánh xe khi có thay đổi về phần thưởng hoặc góc quay
@@ -142,10 +144,7 @@ const LuckyWheel = ({
           />
         </div>
 
-        <div className="luckywheel-logo flex border-2 border-[#1A2B57]">
-          <img src={"vite.svg"} className="p-2" />
-          {/* <img src={centerImage} className="p-2" /> */}
-        </div>
+        <img src={centerImage} className="luckywheel-logo flex border-0" />
       </section>
     </div>
   );
