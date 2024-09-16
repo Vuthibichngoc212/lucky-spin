@@ -43,6 +43,7 @@ const Export: React.FC = () => {
         prize: data.prize,
         date: data.date,
         ip: data.ipAddress,
+        voucherCode: data.voucherCode,
       });
     });
 
@@ -51,9 +52,10 @@ const Export: React.FC = () => {
       if (spinInfo) {
         return {
           ...user,
-          prize: spinInfo.prize || "Không có", // Nếu không có thông tin quay, để trống
-          spinDate: spinInfo.date || "Không có",
-          ip: spinInfo.ip || "Không có",
+          prize: spinInfo.prize || "", // Nếu không có thông tin quay, để trống
+          spinDate: spinInfo.date || "",
+          ip: spinInfo.ip || "",
+          voucherCode: spinInfo.voucherCode || "",
         };
       } else {
         // Trường hợp không có thông tin quay trong spinHistory
@@ -75,6 +77,7 @@ const Export: React.FC = () => {
       { v: "Email" },
       { v: "Ngày tạo" },
       { v: "Phần thưởng" },
+      { v: "Mã voucher" },
       { v: "Ngày quay" },
       { v: "Địa chỉ Ip" },
     ];
@@ -92,6 +95,7 @@ const Export: React.FC = () => {
         "email",
         "createdAt",
         "prize",
+        "voucherCode",
         "spinDate",
         "ip",
       ],
@@ -111,6 +115,7 @@ const Export: React.FC = () => {
       { wch: 25 },
       { wch: 20 },
       { wch: 30 },
+      { wch: 20 },
       { wch: 20 },
       { wch: 15 },
     ];

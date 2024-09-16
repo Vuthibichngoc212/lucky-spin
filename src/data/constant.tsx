@@ -5,41 +5,49 @@ export const PRIZES = [
     name: "Iphone 16",
     img: ImgIp16,
     percentpage: 0, // code để không quay trúng
+    type: "none",
   },
   {
     name: "Voucher 500k",
     img: TuiVang,
-    percentpage: 0, // code để không quay trúng
+    percentpage: 0,
+    type: "none",
   },
   {
     name: "Voucher 300k",
     img: TuiVang,
-    percentpage: 0, // code để không quay trúng
+    percentpage: 0,
+    type: "none",
   },
   {
     name: "Chúc bạn may mắn lần sau",
     img: BetterLuck,
-    percentpage: 70, // 70% khách sẽ quay phải ô này
+    percentpage: 70,
+    type: "betterLuck",
   },
   {
     name: "Voucher 50k",
     img: TuiVang,
-    percentpage: 5, // tỷ lệ dựa trên số lượng 20 phần quà
+    percentpage: 10,
+    type: "voucher50k", // thêm thuộc tính type
   },
   {
     name: "Voucher 20k",
     img: TuiVang,
-    percentpage: 2.5, // tỷ lệ dựa trên số lượng 10 phần quà
+    percentpage: 5,
+    type: "voucher20k", // thêm thuộc tính type
   },
   {
-    name: "Voucher giảm 20%",
+    name: "Voucher giảm 70%",
     img: Voucher,
-    percentpage: 10, // chương trình đang chạy
+    percentpage: 0,
+    type: "none",
   },
   {
     name: "Toner Eveline Magma",
     img: TonerEveline,
-    percentpage: 12.5, // tỷ lệ dựa trên số lượng 30 phần quà
+    percentpage: 15,
+    type: "toner", // thêm thuộc tính type
   },
 ];
 

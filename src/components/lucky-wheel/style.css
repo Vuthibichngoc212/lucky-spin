@@ -100,15 +100,16 @@
 }
 
 .luckywheel-logo {
-  width: 80px;
-  height: 80px;
+  /* width: 80px;
+  height: 80px; */
+  width: 200px;
+  height: 200px;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
   border-radius: 50%;
-  /* background-color: white; */
 }
 
 .luckywheel-btn {
@@ -121,6 +122,9 @@
 
 .luckywheel-btn-icon {
   transform-origin: center;
+}
+.color-icon {
+  color: #4cb9db;
 }
 
 @keyframes rotate {
@@ -184,8 +188,10 @@
     height: 400px;
   }
   .luckywheel-container {
-    width: 380px;
-    height: 380px;
+    /* width: 380px;
+    height: 380px; */
+    width: 360px;
+    height: 360px;
   }
 
   .luckywheel-item span {

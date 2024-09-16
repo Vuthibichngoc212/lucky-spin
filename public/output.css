@@ -63,11 +63,10 @@ html,
 */
 
 body {
-  margin: 20px;
+  margin: 0px;
   /* 1 */
   line-height: inherit;
   /* 2 */
-  background-color: #dc2626;
 }
 
 /*

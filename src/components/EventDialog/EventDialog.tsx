@@ -22,7 +22,18 @@ const EventDialog: React.FC<EventDialogProps> = ({
   message,
 }) => {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="xs"
+      fullWidth
+      sx={{
+        "& .MuiPaper-root": {
+          margin: "0px",
+          padding: " 0px 24px",
+        },
+      }}
+    >
       <DialogTitle sx={{ textAlign: "center", fontWeight: "bold" }}>
         Thông báo
         <IconButton

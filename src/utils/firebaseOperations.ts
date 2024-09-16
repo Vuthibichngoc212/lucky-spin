@@ -1,31 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// /* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "../firebaseConfig";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import dayjs from "dayjs";
+import { UserData } from "../types";
 
-// Hàm thêm thông tin người dùng vào Firestore
-export const addUser = async (data: any) => {
+export const addUser = async (data: UserData) => {
   try {
-    const docRef = await addDoc(collection(db, "users"), {
+    await addDoc(collection(db, "users"), {
       fullName: data.name,
       phone: data.phone,
       address: data.address,
       email: data.email,
       createdAt: dayjs().format("DD/MM/YYYY HH:mm:ss"),
     });
-    console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
 };
 
-// Thêm ngày quay của người dùng và phần thưởng trúng vào Firestore
 export const addUserSpinDate = async (
   email: string,
   ipAddress: string,
   date: string,
-  prize: string
+  prize: string,
+  voucherCode?: string
 ) => {
   try {
     await addDoc(collection(db, "spinHistory"), {
@@ -33,42 +30,65 @@ export const addUserSpinDate = async (
       ipAddress,
       date,
       prize,
+      voucherCode: voucherCode,
     });
   } catch (e) {
     console.error("Error adding spin history: ", e);
   }
 };
 
-// Lấy lịch sử quay của người chơi từ Firestore dựa trên email hoặc IP
-export const getUserSpinHistory = async (email: string, ipAddress: string) => {
+//lấy tất cả các người dùng từ Firestore
+export const getAllSpinHistory = async () => {
   try {
-    const qEmail = query(
-      collection(db, "spinHistory"),
-      where("email", "==", email) // Lấy lịch sử quay dựa trên email
-    );
-    const qIp = query(
-      collection(db, "spinHistory"),
-      where("ipAddress", "==", ipAddress) // Lấy lịch sử quay dựa trên IP
-    );
-
-    const [emailSnapshot, ipSnapshot] = await Promise.all([
-      getDocs(qEmail),
-      getDocs(qIp),
-    ]);
-
-    const spinDates: string[] = [];
-
-    emailSnapshot.forEach((doc) => {
-      spinDates.push(doc.data().date); // Lưu ngày quay từ email
-    });
-
-    ipSnapshot.forEach((doc) => {
-      spinDates.push(doc.data().date); // Lưu ngày quay từ IP
-    });
-
-    return spinDates; // Trả về danh sách các ngày quay từ cả email và IP
+    const querySnapshot = await getDocs(collection(db, "spinHistory"));
+    const data = querySnapshot.docs.map((doc) => doc.data());
+    return data;
   } catch (e) {
-    console.error("Error retrieving spin history: ", e);
+    console.error("Error getting documents: ", e);
     return [];
+  }
+};
+
+export const checkSpinAvailability = async (
+  email: string,
+  ipAddress: string,
+  date: string
+) => {
+  try {
+    const spinRef = collection(db, "spinHistory");
+
+    const q = query(
+      spinRef,
+      where("date", "==", date),
+      where("email", "==", email)
+    );
+    const querySnapshotByEmail = await getDocs(q);
+
+    const qIp = query(
+      spinRef,
+      where("date", "==", date),
+      where("ipAddress", "==", ipAddress)
+    );
+    const querySnapshotByIp = await getDocs(qIp);
+
+    const qBoth = query(
+      spinRef,
+      where("date", "==", date),
+      where("email", "==", email),
+      where("ipAddress", "==", ipAddress)
+    );
+    const querySnapshotByBoth = await getDocs(qBoth);
+
+    // Kiểm tra các trường hợp
+    if (!querySnapshotByBoth.empty) {
+      return { result: "both" };
+    } else if (!querySnapshotByEmail.empty || !querySnapshotByIp.empty) {
+      return { result: "either" };
+    } else {
+      return { result: "none" };
+    }
+  } catch (e) {
+    console.error("Error checking user in Firestore: ", e);
+    return false;
   }
 };

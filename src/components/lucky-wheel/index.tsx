@@ -2,7 +2,8 @@ import { memo, useEffect, useRef } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import "./style.css";
 import { COLORS } from "../../data/constant";
-import centerImage from "../../assets/center.png";
+// import centerImage from "../../assets/center2.png";
+import centerImage from "../../assets/centerImg.png";
 
 type Props = {
   id: string;
@@ -120,7 +121,7 @@ const LuckyWheel = ({
       <section id="luckywheel" className="luckywheel">
         <div className="luckywheel-btn">
           <div ref={arrowRef} className="luckywheel-btn-icon ">
-            <FaMapMarkerAlt className="text-[60px] text-[#1A2B57]" />
+            <FaMapMarkerAlt className="color-icon text-[60px]" />
           </div>
         </div>
 
