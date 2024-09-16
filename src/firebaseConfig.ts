@@ -2,12 +2,12 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCIxkmoHbJkjn_kyoB1twin9cR9UWKOX-Y",
-  authDomain: "login-lucky-spin.firebaseapp.com",
-  projectId: "login-lucky-spin",
-  storageBucket: "login-lucky-spin.appspot.com",
-  messagingSenderId: "70471878780",
-  appId: "1:70471878780:web:895780a6570129d86ba1f9",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = firebase.initializeApp(firebaseConfig);
