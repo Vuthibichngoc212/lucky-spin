@@ -1,11 +1,11 @@
-import { PRIZES } from "../data/constant";
+// import { PRIZES } from "../data/constant";
 import dayjs, { Dayjs } from "dayjs";
 import { StyleRotate } from "../types";
 import { getTimeDifference } from "./get-time-difference";
 
 export type Prize = {
   name: string;
-  img: string | unknown;
+  img: string;
   percentpage: number;
 };
 
@@ -35,12 +35,13 @@ export function calculateSpin(
   styleRotate: StyleRotate,
   setStyleRotate: React.Dispatch<React.SetStateAction<StyleRotate>>,
   setTimeNeedleRotate: React.Dispatch<React.SetStateAction<number>>,
-  CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE: number
+  CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE: number,
+  prizes: Prize[]
 ) {
   const timeCallApi = getTimeDifference(time, dayjs());
   let d = styleRotate.deg;
 
-  const numberOfPrizes = PRIZES.length;
+  const numberOfPrizes = prizes.length;
   const prizeAngle = 360 / numberOfPrizes;
   d = d + (360 - (d % 360)) + (360 * 10 - indexPrizeWon * prizeAngle);
 

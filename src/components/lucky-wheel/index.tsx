@@ -3,7 +3,6 @@ import { MdLocationOn } from "react-icons/md";
 import "./style.css";
 import { COLORS } from "../../data/constant";
 import centerImage from "../../assets/centerImg.png";
-// import centerImage from "../../assets/center2.png";
 
 type Props = {
   id: string;
