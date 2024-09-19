@@ -70,3 +70,47 @@ export const checkSpinAvailability = async (
     return { result: "none", error: message };
   }
 };
+
+export const checkPrizeAvailability = async (
+  prize: string
+): Promise<number> => {
+  try {
+    const today = dayjs().format("DD/MM/YYYY");
+    const spinRef = collection(db, "spinHistory");
+    const q = query(
+      spinRef,
+      where("prize", "==", prize),
+      where("date", "==", today)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.size; // Trả về số lượng phần thưởng đã trúng trong ngày
+  } catch (e) {
+    console.error(`Lỗi khi kiểm tra số lượng ${prize}: `, e);
+    return 0;
+  }
+};
+
+export const checkTotalPrizeAvailability = async (
+  prize: string,
+  maxLimit: number
+): Promise<number> => {
+  try {
+    const startDate = dayjs().subtract(7, "day").format("DD/MM/YYYY");
+    const today = dayjs().format("DD/MM/YYYY");
+
+    const spinRef = collection(db, "spinHistory");
+    const q = query(
+      spinRef,
+      where("prize", "==", prize),
+      where("date", ">=", startDate),
+      where("date", "<=", today)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.size >= maxLimit ? maxLimit : querySnapshot.size; // Trả về số lượng phần thưởng đã trúng, nếu đạt giới hạn, trả về giới hạn
+  } catch (e) {
+    console.error(`Lỗi khi kiểm tra số lượng ${prize} trong 7 ngày: `, e);
+    return 0;
+  }
+};
