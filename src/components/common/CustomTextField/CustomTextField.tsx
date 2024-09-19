@@ -71,18 +71,18 @@ const CustomTextField = ({
             sx={{
               "& .MuiOutlinedInput-root": {
                 "&:hover fieldset": {
-                  borderColor: "#5a1ad0",
+                  borderColor: "#57a5f8",
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: "#5a1ad0",
+                  borderColor: "#57a5f8",
                   borderWidth: "2px",
                 },
               },
               "& .MuiInput-underline:after": {
-                borderBottomColor: "#5a1ad0",
+                borderBottomColor: "#57a5f8",
               },
               "& .MuiFilledInput-underline:after": {
-                borderBottomColor: "#5a1ad0",
+                borderBottomColor: "#57a5f8",
               },
             }}
           />

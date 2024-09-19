@@ -1,7 +1,7 @@
 import { db } from "../firebaseConfig";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import dayjs from "dayjs";
-import { UserData } from "../types";
+import { SpinAvailability, UserData } from "../types";
 
 export const addUser = async (data: UserData) => {
   try {
@@ -37,58 +37,36 @@ export const addUserSpinDate = async (
   }
 };
 
-//lấy tất cả các người dùng từ Firestore
-export const getAllSpinHistory = async () => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "spinHistory"));
-    const data = querySnapshot.docs.map((doc) => doc.data());
-    return data;
-  } catch (e) {
-    console.error("Error getting documents: ", e);
-    return [];
-  }
-};
-
 export const checkSpinAvailability = async (
   email: string,
   ipAddress: string,
   date: string
-) => {
+): Promise<SpinAvailability> => {
   try {
     const spinRef = collection(db, "spinHistory");
+    const formattedDate = dayjs(date, "DD/MM/YYYY").format("DD/MM/YYYY");
 
-    const q = query(
+    const qByEmail = query(
       spinRef,
-      where("date", "==", date),
+      where("date", "==", formattedDate),
       where("email", "==", email)
     );
-    const querySnapshotByEmail = await getDocs(q);
+    const querySnapshotByEmail = await getDocs(qByEmail);
 
-    const qIp = query(
+    const qByIp = query(
       spinRef,
-      where("date", "==", date),
+      where("date", "==", formattedDate),
       where("ipAddress", "==", ipAddress)
     );
-    const querySnapshotByIp = await getDocs(qIp);
+    const querySnapshotByIp = await getDocs(qByIp);
 
-    const qBoth = query(
-      spinRef,
-      where("date", "==", date),
-      where("email", "==", email),
-      where("ipAddress", "==", ipAddress)
-    );
-    const querySnapshotByBoth = await getDocs(qBoth);
-
-    // Kiểm tra các trường hợp
-    if (!querySnapshotByBoth.empty) {
-      return { result: "both" };
-    } else if (!querySnapshotByEmail.empty || !querySnapshotByIp.empty) {
-      return { result: "either" };
+    if (!querySnapshotByEmail.empty || !querySnapshotByIp.empty) {
+      return { result: "found" };
     } else {
       return { result: "none" };
     }
-  } catch (e) {
-    console.error("Error checking user in Firestore: ", e);
-    return false;
+  } catch (e: unknown) {
+    const message = (e as Error).message;
+    return { result: "none", error: message };
   }
 };

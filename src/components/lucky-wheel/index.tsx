@@ -1,9 +1,9 @@
 import { memo, useEffect, useRef } from "react";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { MdLocationOn } from "react-icons/md";
 import "./style.css";
 import { COLORS } from "../../data/constant";
-// import centerImage from "../../assets/center2.png";
 import centerImage from "../../assets/centerImg.png";
+// import centerImage from "../../assets/center2.png";
 
 type Props = {
   id: string;
@@ -15,9 +15,11 @@ type Props = {
   spinning?: boolean;
   prizes: { name: string; img: string; percentpage: number }[];
   timeNeedleRotate: number;
+  onSpin: () => void;
 };
 
-const COLOR = ["#b0061a", "#fed882"];
+// const COLOR = ["#b0061a", "#fed882"];
+const COLOR = ["#357dc8", "#ffffff"];
 
 const LuckyWheel = ({
   id,
@@ -25,6 +27,7 @@ const LuckyWheel = ({
   prizes,
   spinning,
   timeNeedleRotate,
+  onSpin,
 }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const arrowRef = useRef<HTMLDivElement | null>(null);
@@ -121,7 +124,7 @@ const LuckyWheel = ({
       <section id="luckywheel" className="luckywheel">
         <div className="luckywheel-btn">
           <div ref={arrowRef} className="luckywheel-btn-icon ">
-            <FaMapMarkerAlt className="color-icon text-[60px]" />
+            <MdLocationOn className="color-icon text-[60px]" />
           </div>
         </div>
 
@@ -145,7 +148,11 @@ const LuckyWheel = ({
           />
         </div>
 
-        <img src={centerImage} className="luckywheel-logo flex border-0" />
+        <img
+          src={centerImage}
+          onClick={onSpin}
+          className="luckywheel-logo flex border-0"
+        />
       </section>
     </div>
   );

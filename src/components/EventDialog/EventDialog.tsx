@@ -67,10 +67,10 @@ const EventDialog: React.FC<EventDialogProps> = ({
           sx={{
             borderRadius: "8px",
             textTransform: "none",
-            backgroundColor: "#5a1ad0",
+            backgroundColor: "#57a5f8",
             color: "#fff",
             "&:hover": {
-              backgroundColor: "#5a1ad0",
+              backgroundColor: "#57a5f8",
             },
           }}
         >
