@@ -75,11 +75,11 @@ const CRUDModal = ({
               sx={{
                 borderRadius: "8px",
                 textTransform: "none",
-                borderColor: "#5a1ad0",
-                color: "#5a1ad0",
+                borderColor: "#57a5f8",
+                color: "#57a5f8",
                 "&:hover": {
-                  borderColor: "#5a1ad0",
-                  color: "#5a1ad0",
+                  borderColor: "#57a5f8",
+                  color: "#57a5f8",
                 },
               }}
             >
@@ -93,10 +93,10 @@ const CRUDModal = ({
               sx={{
                 borderRadius: "8px",
                 textTransform: "none",
-                backgroundColor: "#5a1ad0",
+                backgroundColor: "#489bf3",
                 color: "#fff",
                 "&:hover": {
-                  backgroundColor: "#5a1ad0",
+                  backgroundColor: "#3278b3",
                 },
               }}
             >

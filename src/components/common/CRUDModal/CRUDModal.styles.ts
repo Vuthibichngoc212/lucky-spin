@@ -16,26 +16,26 @@ export const useStyles = makeStyles(() => ({
     boxShadow: "24px",
   },
   "@global": {
-    "@keyframes onilgapp-pulse-shadow": {
+    "@keyframes pulseShadow": {
       "0%": {
-        boxShadow: "0 0 0 0 rgba(90, 26, 208, 0.7)",
+        boxShadow: "0 0 0 0 rgba(87, 165, 248, 0.7)",
       },
       "70%": {
-        boxShadow: "0 0 10px 10px rgba(90, 26, 208, 0)",
+        boxShadow: "0 0 10px 10px rgba(87, 165, 248, 0)",
       },
       "100%": {
-        boxShadow: "0 0 0 0 rgba(90, 26, 208, 0)",
+        boxShadow: "0 0 0 0 rgba(87, 165, 248, 0)",
       },
     },
   },
   submitButton: {
-    backgroundColor: "#5a1ad0",
+    backgroundColor: "#57a5f8",
     color: "white",
     padding: "10px 20px",
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
     maxWidth: "200px",
-    animation: "$onilgapp-pulse-shadow 1.8s infinite", // Referencing the defined animation
+    animation: "pulseShadow 1.8s infinite",
   },
 }));

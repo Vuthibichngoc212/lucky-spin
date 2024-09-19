@@ -27,3 +27,8 @@ export type UserData = {
   address: string;
   email: string;
 };
+
+export type SpinAvailability = {
+  result: "found" | "none";
+  error?: string;
+};

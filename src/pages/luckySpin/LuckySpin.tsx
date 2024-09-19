@@ -1,21 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-// import { PRIZES } from "../../data/constant";
+import { PRIZES } from "../../data/constant";
 import dayjs, { Dayjs } from "dayjs";
 import { getTimeDifference } from "../../utils/get-time-difference";
-import {
-  ImgIp16,
-  Voucher,
-  TonerEveline,
-  BetterLuck,
-  TuiVang,
-} from "../../assets";
 
 import {
   addUser,
   addUserSpinDate,
   checkSpinAvailability,
-  getAllSpinHistory,
 } from "../../utils/firebaseOperations";
 import { calculateSpin, randomIndex } from "../../utils/spinLogic";
 import { fetchUseIP } from "../../services/fetchUseIP";
@@ -31,11 +23,11 @@ import {
 } from "../../types";
 import { LuckyWheel, WinningResult } from "../../components";
 import "./LuckySpin.css";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
+import Text from "../../assets/text.png";
 import EventDialog from "../../components/EventDialog/EventDialog";
 import CRUDModal from "../../components/common/CRUDModal/CRUDModal";
 import CustomTextField from "../../components/common/CustomTextField/CustomTextField";
-import { DocumentData } from "firebase/firestore";
 
 const ID = "luckywheel";
 const CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE = 15;
@@ -46,105 +38,8 @@ const LuckySpin: React.FC = () => {
     timingFunc: "ease-in-out",
     timeDuration: 0,
   });
-  const [history, setHistory] = useState<DocumentData[]>([]);
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      const data = await getAllSpinHistory();
-      setHistory(data);
-    };
-
-    fetchHistory();
-    // setInterval mỗi 30s thì fetch lại data
-    setInterval(fetchHistory, 30000);
-  }, []);
-
-  const date = new Date();
-
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear(); // Năm
-
-  const formattedDate = `${day}/${month}/${year}`;
-
-  const countVoucher20k = history.filter(
-    (item: any) =>
-      item.prize === "Voucher 20k" && item.date.split(" ")[0] === formattedDate
-  ).length;
-
-  const countVoucher50k = history.filter(
-    (item: any) =>
-      item.prize === "Voucher 50k" && item.date.split(" ")[0] === formattedDate
-  ).length;
-
-  const Toner_Eveline_Magma = history.filter(
-    (item: any) =>
-      item.prize === "Toner Eveline Magma" &&
-      item.date.split(" ")[0] === formattedDate
-  ).length;
-
-  const countTotalVoucher20k = history.filter(
-    (item: any) => item.prize === "Voucher 20k"
-  ).length;
-
-  const countTotalVoucher50k = history.filter(
-    (item: any) => item.prize === "Voucher 50k"
-  ).length;
-
-  const countTotalToner = history.filter(
-    (item: any) => item.prize === "Toner Eveline Magma"
-  ).length;
-
-  const PRIZES = [
-    {
-      name: "Iphone 16",
-      img: ImgIp16,
-      percentpage: 0,
-      type: "none",
-    },
-    {
-      name: "Voucher 500k",
-      img: TuiVang,
-      percentpage: 0,
-      type: "none",
-    },
-    {
-      name: "Voucher 300k",
-      img: TuiVang,
-      percentpage: 0,
-      type: "none",
-    },
-    {
-      name: "Chúc bạn may mắn lần sau",
-      img: BetterLuck,
-      percentpage: 70,
-      type: "betterLuck",
-    },
-    {
-      name: "Voucher 50k",
-      img: TuiVang,
-      percentpage: countVoucher50k >= 3 || countTotalVoucher50k > 20 ? 0 : 10,
-      type: "voucher50k",
-    },
-    {
-      name: "Voucher 20k",
-      img: TuiVang,
-      percentpage: countVoucher20k >= 1 || countTotalVoucher20k > 10 ? 0 : 5,
-      type: "voucher20k",
-    },
-    {
-      name: "Voucher giảm 70%",
-      img: Voucher,
-      percentpage: 0,
-      type: "none",
-    },
-    {
-      name: "Toner Eveline Magma",
-      img: TonerEveline,
-      percentpage: Toner_Eveline_Magma >= 4 || countTotalToner > 30 ? 0 : 15,
-      type: "toner",
-    },
-  ];
+  const [count, setCount] = useState<number>(0);
 
   // Trạng thái quản lý xem vòng quay có đang quay hay không.
   const [spinning, setSpinning] = useState<boolean>(false);
@@ -187,20 +82,11 @@ const LuckySpin: React.FC = () => {
   });
 
   const onSubmit = async (data: UserData) => {
-    const ip = await fetchUseIP();
-    const currentDate = dayjs().format("DD/MM/YYYY");
-
-    const userExists = await checkSpinAvailability(data.email, ip, currentDate);
-
-    if (userExists) {
-      setDialogMessage("Bạn đã quay hôm nay. Vui lòng quay lại vào ngày mai!");
-      setOpenDialog(true);
-    } else {
-      await addUser(data);
-      setEmail(data.email);
-      setIsUserInfoValid(true);
-      setConfigModal({ ...configModal, openModal: false });
-    }
+    setCount(count + 1);
+    await addUser(data);
+    setEmail(data.email);
+    setIsUserInfoValid(true);
+    setConfigModal({ ...configModal, openModal: false });
   };
 
   useEffect(() => {
@@ -218,20 +104,20 @@ const LuckySpin: React.FC = () => {
   }, [isUserInfoValid]);
 
   const handleSpin = async () => {
-    const today = dayjs().startOf("day");
-    const startDate = dayjs("2024-09-12").startOf("day");
-    const endDate = dayjs("2024-09-19").endOf("day");
+    const today = dayjs().startOf("day").format("YYYY-MM-DD");
 
-    if (today.isBefore(startDate)) {
+    const startDate = dayjs("2024-09-17").startOf("day");
+    const endDate = dayjs("2024-09-19").endOf("day");
+    const checkDate = dayjs(today).startOf("day");
+
+    if (checkDate.isBefore(startDate)) {
       setDialogMessage(
-        "Sự kiện chưa bắt đầu. Bạn chỉ có thể quay từ ngày 12/09"
+        "Sự kiện chưa bắt đầu. Bạn chỉ có thể quay từ ngày 12/09."
       );
       setOpenDialog(true);
       return;
-    }
-
-    if (today.isAfter(endDate)) {
-      setDialogMessage("Sự kiện đã kết thúc");
+    } else if (checkDate.isAfter(endDate)) {
+      setDialogMessage("Sự kiện đã kết thúc.");
       setOpenDialog(true);
       return;
     }
@@ -248,12 +134,13 @@ const LuckySpin: React.FC = () => {
       setOpenDialog(true);
       return;
     }
-
     const currentDate = dayjs().format("DD/MM/YYYY");
-    const storedSpinDate = localStorage.getItem("spinDate");
 
-    if (storedSpinDate === currentDate) {
-      setDialogMessage("Bạn đã quay hôm nay. Vui lòng quay lại vào ngày mai!");
+    const availability = await checkSpinAvailability(email, ipAddress, today);
+    if (availability.result !== "none") {
+      setDialogMessage(
+        "Bạn đã quay trong ngày hôm nay. Vui lòng quay lại vào ngày mai!"
+      );
       setOpenDialog(true);
       return;
     }
@@ -288,8 +175,6 @@ const LuckySpin: React.FC = () => {
       PRIZES[result].name,
       voucherCode || ""
     );
-
-    localStorage.setItem("spinDate", currentDate);
 
     setWinningResult({
       name: prize.name,
@@ -365,26 +250,14 @@ const LuckySpin: React.FC = () => {
 
   return (
     <Box>
-      <Box sx={{ textAlign: "center" }}>
-        <Typography
-          sx={{ fontWeight: "bold", color: "#f1ba18", fontSize: "30px" }}
-        >
-          VÒNG QUAY MAY MẮN
-        </Typography>
-        <Typography
-          sx={{ fontWeight: "bold", color: "#ffffff", fontSize: "20px" }}
-        >
-          Áp dụng cho tất cả các khách hàng tại hệ thống EVELINE
-        </Typography>
-        <Typography
-          sx={{
-            fontWeight: "bold",
-            color: "#ffffff",
-            fontSize: "16px",
-          }}
-        >
-          Thời gian: 12/09 - 19/09
-        </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <img src={Text} alt="text" className="img-text" />
       </Box>
       <div className="w-1/2 flex flex-col items-center">
         <LuckyWheel
@@ -393,24 +266,8 @@ const LuckySpin: React.FC = () => {
           prizes={PRIZES}
           spinning={spinning}
           timeNeedleRotate={timeNeedleRotate}
+          onSpin={handleSpin}
         />
-        <div className="flex justify-center mt-[70px] w-[50%]">
-          <button
-            disabled={countSpin === 0 || spinning}
-            onClick={handleSpin}
-            className={`py-2 ${
-              countSpin === 0 || spinning
-                ? "cursor-not-allowed"
-                : "cursor-pointer"
-            } px-5 w-[100%] rounded-lg bg-[#1A2B57] text-white font-bold btn-shadow-animate`}
-          >
-            {spinning
-              ? "Đang quay"
-              : countSpin > 0
-              ? "Quay"
-              : "Bạn đã hết lượt"}
-          </button>
-        </div>
 
         <CRUDModal
           isOpenModal={configModal.openModal}
