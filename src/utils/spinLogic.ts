@@ -1,4 +1,3 @@
-// import { PRIZES } from "../data/constant";
 import dayjs, { Dayjs } from "dayjs";
 import { StyleRotate } from "../types";
 import { getTimeDifference } from "./get-time-difference";
@@ -9,23 +8,35 @@ export type Prize = {
   percentpage: number;
 };
 
-// Hàm tính toán chỉ số phần thưởng trúng
 export function randomIndex(prizes: Prize[]) {
-  // Lọc ra những phần quà có `percentpage > 0`
   const validPrizes = prizes.filter((prize) => prize.percentpage > 0);
 
-  // Nếu không có phần quà nào hợp lệ thì trả về -1
   if (validPrizes.length === 0) {
     return -1;
   }
 
-  // Random chọn ngẫu nhiên một phần quà từ danh sách validPrizes
-  const randomIndex = Math.floor(Math.random() * validPrizes.length);
-
-  // Tìm chỉ số phần thưởng trong danh sách gốc `prizes`
-  return prizes.findIndex(
-    (prize) => prize.name === validPrizes[randomIndex].name
+  // Tính tổng tất cả các `percentpage`
+  const totalPercent = validPrizes.reduce(
+    (sum, prize) => sum + prize.percentpage,
+    0
   );
+
+  // Tạo một số ngẫu nhiên từ 0 đến `totalPercent`
+  const randomValue = Math.random() * totalPercent;
+
+  // Dùng biến để theo dõi xác suất tích lũy
+  let accumulatedPercent = 0;
+
+  // Lặp qua các phần quà hợp lệ và chọn dựa trên xác suất
+  for (let i = 0; i < validPrizes.length; i++) {
+    accumulatedPercent += validPrizes[i].percentpage;
+    if (randomValue <= accumulatedPercent) {
+      // Tìm chỉ số phần thưởng trong danh sách gốc `prizes`
+      return prizes.findIndex((prize) => prize.name === validPrizes[i].name);
+    }
+  }
+
+  return -1;
 }
 
 // Hàm tính góc quay và tốc độ xoay kim

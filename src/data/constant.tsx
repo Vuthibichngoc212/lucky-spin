@@ -16,13 +16,6 @@ export const getPrizes = async () => {
     30
   );
 
-  console.log("Daily Voucher 50k Count:", voucher50k);
-  console.log("Total Voucher 50k Count (7 days):", totalVoucher50k);
-  console.log("Daily Voucher 20k Count:", voucher20k);
-  console.log("Total Voucher 20k Count (7 days):", totalVoucher20k);
-  console.log("Daily Toner Count:", tonerCount);
-  console.log("Total Toner Count (7 days):", totalToner);
-
   const PRIZES = [
     {
       name: "Iphone 16",
@@ -73,10 +66,6 @@ export const getPrizes = async () => {
       type: "toner",
     },
   ];
-
-  PRIZES.forEach((prize) => {
-    console.log(`Prize: ${prize.name}, Percentpage: ${prize.percentpage}`);
-  });
 
   return PRIZES;
 };

@@ -112,13 +112,13 @@ const LuckySpin: React.FC = () => {
   const handleSpin = async () => {
     const today = dayjs().startOf("day").format("YYYY-MM-DD");
 
-    const startDate = dayjs("2024-09-17").startOf("day");
-    const endDate = dayjs("2024-09-19").endOf("day");
+    const startDate = dayjs("2024-09-20").startOf("day");
+    const endDate = dayjs("2024-09-27").endOf("day");
     const checkDate = dayjs(today).startOf("day");
 
     if (checkDate.isBefore(startDate)) {
       setDialogMessage(
-        "Sự kiện chưa bắt đầu. Bạn chỉ có thể quay từ ngày 12/09."
+        "Sự kiện chưa bắt đầu. Bạn chỉ có thể quay từ ngày 20/09."
       );
       setOpenDialog(true);
       return;
