@@ -6,9 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./output.css" rel="stylesheet" />
     <title>Vòng quay may mắn</title>
+    <style>
+      #root {
+        height: 100%;
+      }
+      @media screen and (min-width: 1921px) {
+        .background-div {
+          height: 100vh !important;
+        }
+      }
+
+      @media screen and (max-width: 1280px) {
+        .background-div {
+          height: auto !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <div
+      class="background-div"
       style="
         background-image: url('/src/assets/bg.png');
         background-size: cover;

@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.background {
+  background-image: url("/src/assets/bg.png");
+  background-size: cover;
+  background-position: center;
+  width: 100vw;
+  min-height: 100vh; /* Đảm bảo chiều cao tối thiểu là chiều cao của màn hình */
+}
+
+/* @media only screen and (max-width: 768px) {
+  .background {
+    background-size: contain; 
+    background-position: top;
+    min-height: 100vh;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .background {
+    background-size: cover;
+    background-position: top;
+    min-height: 100vh;
+  }
+} */
