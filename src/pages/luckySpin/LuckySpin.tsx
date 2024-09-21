@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-// import { PRIZES } from "../../data/constant";
 import dayjs, { Dayjs } from "dayjs";
 import { getTimeDifference } from "../../utils/get-time-difference";
 
-import { addUser, addUserSpinDate } from "../../utils/firebaseOperations";
+import {
+  addUser,
+  addUserSpinDate,
+  checkSpinAvailability,
+} from "../../utils/firebaseOperations";
 import { calculateSpin, Prize, randomIndex } from "../../utils/spinLogic";
-import { fetchUseIP } from "../../services/fetchUseIP";
 import { validationSchema } from "../../helpers/validationSchema";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -21,6 +22,7 @@ import { LuckyWheel, WinningResult } from "../../components";
 import "./LuckySpin.css";
 import { Box, Grid } from "@mui/material";
 import Text from "../../assets/text.png";
+// import Text from "../../assets/text-spin.svg";
 import EventDialog from "../../components/EventDialog/EventDialog";
 import CRUDModal from "../../components/common/CRUDModal/CRUDModal";
 import CustomTextField from "../../components/common/CustomTextField/CustomTextField";
@@ -64,7 +66,7 @@ const LuckySpin: React.FC = () => {
   const [indexPrizeWon, setIndexPrizeWon] = useState<number | null>(null);
 
   const [isUserInfoValid, setIsUserInfoValid] = useState<boolean>(false);
-  const [ipAddress, setIpAddress] = useState<string | null>(null);
+  const [phone, setPhone] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [dialogMessage, setDialogMessage] = useState<string>("");
@@ -83,22 +85,15 @@ const LuckySpin: React.FC = () => {
     setCount(count + 1);
     await addUser(data);
     setEmail(data.email);
+    setPhone(data.phone);
     setIsUserInfoValid(true);
     setConfigModal({ ...configModal, openModal: false });
   };
 
   useEffect(() => {
-    const fetchIP = async () => {
-      const ip = await fetchUseIP();
-      setIpAddress(ip);
-    };
-    fetchIP();
-  }, []);
-
-  useEffect(() => {
     const fetchPrizes = async () => {
-      const prizes = await getPrizes(); // Gọi hàm để lấy phần thưởng động
-      setAvailablePrizes(prizes); // Lưu danh sách phần thưởng vào state
+      const prizes = await getPrizes();
+      setAvailablePrizes(prizes);
     };
     fetchPrizes();
   }, []);
@@ -133,7 +128,7 @@ const LuckySpin: React.FC = () => {
       return;
     }
 
-    if (!ipAddress || !email) {
+    if (!phone || !email) {
       setDialogMessage(
         "Có sự cố xảy ra khi xác thực thông tin của bạn. Vui lòng thử lại sau."
       );
@@ -142,14 +137,14 @@ const LuckySpin: React.FC = () => {
     }
     const currentDate = dayjs().format("DD/MM/YYYY");
 
-    // const availability = await checkSpinAvailability(email, ipAddress, today);
-    // if (availability.result !== "none") {
-    //   setDialogMessage(
-    //     "Bạn đã quay trong ngày hôm nay. Vui lòng quay lại vào ngày mai!"
-    //   );
-    //   setOpenDialog(true);
-    //   return;
-    // }
+    const availability = await checkSpinAvailability(email, phone, today);
+    if (availability.result !== "none") {
+      setDialogMessage(
+        "Bạn đã quay trong ngày hôm nay. Vui lòng quay lại vào ngày mai!"
+      );
+      setOpenDialog(true);
+      return;
+    }
 
     // Lấy danh sách phần thưởng động
     const availablePrizes = await getPrizes();
@@ -162,7 +157,6 @@ const LuckySpin: React.FC = () => {
     setIndexPrizeWon(result);
     setCountSpin((prevState) => prevState - 1);
 
-    // const prize = PRIZES[result];
     const prize = availablePrizes[result];
     let voucherCode: string | null = null;
 
@@ -182,9 +176,8 @@ const LuckySpin: React.FC = () => {
 
     await addUserSpinDate(
       email,
-      ipAddress,
+      phone,
       currentDate,
-      // PRIZES[result].name,
       availablePrizes[result].name,
       voucherCode || ""
     );
@@ -223,7 +216,6 @@ const LuckySpin: React.FC = () => {
       let d = styleRotate.deg;
 
       // Tính toán góc quay dựa trên phần thưởng đã chọn
-      // const numberOfPrizes = PRIZES.length;
       const numberOfPrizes = availablePrizes.length;
       const prizeAngle = 360 / numberOfPrizes;
       d = d + (360 - (d % 360)) + (360 * 10 - indexPrizeWon * prizeAngle); // Tính lại góc để kim trỏ vào phần thưởng
@@ -243,8 +235,6 @@ const LuckySpin: React.FC = () => {
 
       // Hiển thị kết quả phần thưởng
       setWinningResult({
-        // name: PRIZES[indexPrizeWon].name,
-        // img: PRIZES[indexPrizeWon].img,
         name: availablePrizes[indexPrizeWon].name,
         img: availablePrizes[indexPrizeWon].img,
       });
@@ -253,9 +243,6 @@ const LuckySpin: React.FC = () => {
       setListPrizeWon([
         ...listPrizeWon,
         {
-          // name: PRIZES[indexPrizeWon].name,
-          // img: PRIZES[indexPrizeWon].img,
-          // time: dayjs().format("DD/MM/YYYY HH:mm:ss"),
           name: availablePrizes[indexPrizeWon].name,
           img: availablePrizes[indexPrizeWon].img,
           time: dayjs().format("DD/MM/YYYY HH:mm:ss"),
@@ -282,7 +269,6 @@ const LuckySpin: React.FC = () => {
         <LuckyWheel
           id={ID}
           styleRotate={styleRotate}
-          // prizes={PRIZES}
           prizes={availablePrizes}
           spinning={spinning}
           timeNeedleRotate={timeNeedleRotate}

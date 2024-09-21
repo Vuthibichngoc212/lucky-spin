@@ -42,7 +42,6 @@ const Export: React.FC = () => {
         email: data.email, // Đảm bảo email trùng khớp với collection "users"
         prize: data.prize,
         date: data.date,
-        ip: data.ipAddress,
         voucherCode: data.voucherCode,
       });
     });
@@ -52,18 +51,16 @@ const Export: React.FC = () => {
       if (spinInfo) {
         return {
           ...user,
-          prize: spinInfo.prize || "", // Nếu không có thông tin quay, để trống
+          prize: spinInfo.prize || "",
           spinDate: spinInfo.date || "",
-          ip: spinInfo.ip || "",
           voucherCode: spinInfo.voucherCode || "",
         };
       } else {
         // Trường hợp không có thông tin quay trong spinHistory
         return {
           ...user,
-          prize: "Không có",
-          spinDate: "Không có",
-          ip: "Không có",
+          prize: "Không có thông tin",
+          spinDate: "Không có thông tin",
         };
       }
     });
@@ -79,7 +76,6 @@ const Export: React.FC = () => {
       { v: "Phần thưởng" },
       { v: "Mã voucher" },
       { v: "Ngày quay" },
-      { v: "Địa chỉ Ip" },
     ];
 
     // Tạo một WorkBook mới
@@ -97,7 +93,6 @@ const Export: React.FC = () => {
         "prize",
         "voucherCode",
         "spinDate",
-        "ip",
       ],
     });
 
@@ -117,7 +112,6 @@ const Export: React.FC = () => {
       { wch: 30 },
       { wch: 20 },
       { wch: 20 },
-      { wch: 15 },
     ];
 
     // Thêm sheet vào WorkBook
