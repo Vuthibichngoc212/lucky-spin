@@ -19,7 +19,7 @@ export const addUser = async (data: UserData) => {
 
 export const addUserSpinDate = async (
   email: string,
-  ipAddress: string,
+  phone: string,
   date: string,
   prize: string,
   voucherCode?: string
@@ -27,7 +27,7 @@ export const addUserSpinDate = async (
   try {
     await addDoc(collection(db, "spinHistory"), {
       email,
-      ipAddress,
+      phone,
       date,
       prize,
       voucherCode: voucherCode,
@@ -39,7 +39,7 @@ export const addUserSpinDate = async (
 
 export const checkSpinAvailability = async (
   email: string,
-  ipAddress: string,
+  phone: string,
   date: string
 ): Promise<SpinAvailability> => {
   try {
@@ -53,14 +53,14 @@ export const checkSpinAvailability = async (
     );
     const querySnapshotByEmail = await getDocs(qByEmail);
 
-    const qByIp = query(
+    const qByPhone = query(
       spinRef,
       where("date", "==", formattedDate),
-      where("ipAddress", "==", ipAddress)
+      where("phone", "==", phone)
     );
-    const querySnapshotByIp = await getDocs(qByIp);
+    const querySnapshotByPhone = await getDocs(qByPhone);
 
-    if (!querySnapshotByEmail.empty || !querySnapshotByIp.empty) {
+    if (!querySnapshotByEmail.empty || !querySnapshotByPhone.empty) {
       return { result: "found" };
     } else {
       return { result: "none" };
@@ -71,46 +71,49 @@ export const checkSpinAvailability = async (
   }
 };
 
-export const checkPrizeAvailability = async (
-  prize: string
-): Promise<number> => {
+export const checkPrizeAvailabilityBatch = async (prizes: string[]) => {
   try {
     const today = dayjs().format("DD/MM/YYYY");
     const spinRef = collection(db, "spinHistory");
-    const q = query(
-      spinRef,
-      where("prize", "==", prize),
-      where("date", "==", today)
+
+    const queries = prizes.map((prize) =>
+      query(spinRef, where("prize", "==", prize), where("date", "==", today))
     );
 
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.size; // Trả về số lượng phần thưởng đã trúng trong ngày
+    const querySnapshots = await Promise.all(queries.map((q) => getDocs(q)));
+
+    return querySnapshots.map((snapshot) => snapshot.size);
   } catch (e) {
-    console.error(`Lỗi khi kiểm tra số lượng ${prize}: `, e);
-    return 0;
+    console.error("Lỗi khi kiểm tra số lượng phần thưởng: ", e);
+    return Array(prizes.length).fill(0); // Return 0s in case of an error
   }
 };
 
-export const checkTotalPrizeAvailability = async (
-  prize: string,
-  maxLimit: number
-): Promise<number> => {
+export const checkTotalPrizeAvailabilityBatch = async (
+  prizes: string[],
+  maxLimits: number[]
+) => {
   try {
     const startDate = dayjs().subtract(7, "day").format("DD/MM/YYYY");
     const today = dayjs().format("DD/MM/YYYY");
-
     const spinRef = collection(db, "spinHistory");
-    const q = query(
-      spinRef,
-      where("prize", "==", prize),
-      where("date", ">=", startDate),
-      where("date", "<=", today)
+
+    const queries = prizes.map((prize) =>
+      query(
+        spinRef,
+        where("prize", "==", prize),
+        where("date", ">=", startDate),
+        where("date", "<=", today)
+      )
     );
 
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.size >= maxLimit ? maxLimit : querySnapshot.size; // Trả về số lượng phần thưởng đã trúng, nếu đạt giới hạn, trả về giới hạn
+    const querySnapshots = await Promise.all(queries.map((q) => getDocs(q)));
+
+    return querySnapshots.map((snapshot, index) =>
+      snapshot.size >= maxLimits[index] ? maxLimits[index] : snapshot.size
+    );
   } catch (e) {
-    console.error(`Lỗi khi kiểm tra số lượng ${prize} trong 7 ngày: `, e);
-    return 0;
+    console.error("Lỗi khi kiểm tra số lượng phần thưởng trong 7 ngày: ", e);
+    return Array(prizes.length).fill(0); // Return 0s in case of an error
   }
 };

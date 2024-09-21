@@ -1,20 +1,20 @@
 import { ImgIp16, Voucher, TonerEveline, BetterLuck, TuiVang } from "../assets";
 import {
-  checkPrizeAvailability,
-  checkTotalPrizeAvailability,
+  checkPrizeAvailabilityBatch,
+  checkTotalPrizeAvailabilityBatch,
 } from "../utils/firebaseOperations";
 
 export const getPrizes = async () => {
-  const voucher50k = await checkPrizeAvailability("Voucher 50k");
-  const voucher20k = await checkPrizeAvailability("Voucher 20k");
-  const tonerCount = await checkPrizeAvailability("Toner Eveline Magma");
+  const prizeNames = ["Voucher 50k", "Voucher 20k", "Toner Eveline Magma"];
+  const maxLimits = [20, 10, 30];
 
-  const totalVoucher50k = await checkTotalPrizeAvailability("Voucher 50k", 20);
-  const totalVoucher20k = await checkTotalPrizeAvailability("Voucher 20k", 10);
-  const totalToner = await checkTotalPrizeAvailability(
-    "Toner Eveline Magma",
-    30
-  );
+  const [prizeAvailability, totalPrizeAvailability] = await Promise.all([
+    checkPrizeAvailabilityBatch(prizeNames),
+    checkTotalPrizeAvailabilityBatch(prizeNames, maxLimits),
+  ]);
+
+  const [voucher50k, voucher20k, tonerCount] = prizeAvailability;
+  const [totalVoucher50k, totalVoucher20k, totalToner] = totalPrizeAvailability;
 
   const PRIZES = [
     {
