@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { getTimeDifference } from "../../utils/get-time-difference";
+import Img from "./../../assets/bg.png";
 
 import {
   addUser,
@@ -254,7 +255,14 @@ const LuckySpin: React.FC = () => {
   }, [indexPrizeWon, availablePrizes, time]);
 
   return (
-    <Box>
+    <Box
+      style={{
+        height: "120vh",
+        backgroundImage: `url(${Img})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -282,6 +290,8 @@ const LuckySpin: React.FC = () => {
           headerTitle={
             configModal.typeModal === "userInfo"
               ? "Nhập thông tin để quay"
+              : winningResult.name === "Chúc bạn may mắn lần sau"
+              ? ""
               : "Chúc mừng bạn đã trúng thưởng"
           }
           cancelButtonLabel="Hủy"

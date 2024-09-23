@@ -2,7 +2,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { Button, Divider } from "@mui/material";
+import { Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useStyles } from "./CRUDModal.styles";
 import HeaderTitle from "../HeaderTitle/HeaderTitle";
@@ -56,7 +56,7 @@ const CRUDModal = ({
             <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />
           </Box>
         </Box>
-        <Divider sx={{ mb: "1.6rem" }} />
+        {/* <Divider sx={{ mb: "1.6rem" }} /> */}
 
         <Box>
           <Box>{children}</Box>
