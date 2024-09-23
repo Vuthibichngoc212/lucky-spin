@@ -21,8 +21,7 @@ import {
 import { LuckyWheel, WinningResult } from "../../components";
 import "./LuckySpin.css";
 import { Box, Grid } from "@mui/material";
-import Text from "../../assets/text.png";
-// import Text from "../../assets/text-spin.svg";
+import Text from "../../assets/group.svg";
 import EventDialog from "../../components/EventDialog/EventDialog";
 import CRUDModal from "../../components/common/CRUDModal/CRUDModal";
 import CustomTextField from "../../components/common/CustomTextField/CustomTextField";
