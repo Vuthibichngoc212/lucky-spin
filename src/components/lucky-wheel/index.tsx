@@ -17,7 +17,6 @@ type Props = {
   onSpin: () => void;
 };
 
-// const COLOR = ["#b0061a", "#fed882"];
 const COLOR = ["#357dc8", "#ffffff"];
 
 const LuckyWheel = ({
@@ -151,6 +150,7 @@ const LuckyWheel = ({
           src={centerImage}
           onClick={onSpin}
           className="luckywheel-logo flex border-0"
+          style={{ cursor: "pointer" }}
         />
       </section>
     </div>

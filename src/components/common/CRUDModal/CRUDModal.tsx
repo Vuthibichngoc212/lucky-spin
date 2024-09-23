@@ -56,7 +56,7 @@ const CRUDModal = ({
             <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />
           </Box>
         </Box>
-        <Divider sx={{ mb: "1.6rem" }} />
+        {/* <Divider sx={{ mb: "1.6rem" }} /> */}
 
         <Box>
           <Box>{children}</Box>

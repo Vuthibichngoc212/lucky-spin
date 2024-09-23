@@ -20,15 +20,20 @@ const WinningResult = ({ winningResult }: Props) => {
           <span className="text-lg font-bold text-[#C49B60]">
             {winningResult.name}
           </span>
-          {winningResult.voucherCode && (
-            <span className="text-lg font-bold text-[#C49B60]">
-              Mã voucher: {winningResult.voucherCode}
+          {winningResult.voucherCode ? (
+            <>
+              <span className="text-lg font-bold text-[#C49B60]">
+                Mã voucher: {winningResult.voucherCode}
+              </span>
+              <span className="text-base text-[#C49B60]">
+                Vui lòng lưu mã voucher để áp dụng khi mua hàng
+              </span>
+            </>
+          ) : (
+            <span className="text-base text-[#C49B60]">
+              Vui lòng chụp lại màn hình để nhận quà
             </span>
           )}
-          <span className="text-base text-[#C49B60]">
-            Vui lòng chụp lại màn hình hoặc copy mã voucher để áp dụng khi mua
-            hàng
-          </span>
         </>
       )}
     </div>

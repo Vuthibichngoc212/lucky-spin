@@ -53,13 +53,12 @@ const EventDialog: React.FC<EventDialogProps> = ({
       <DialogContent
         sx={{
           textAlign: "center",
-          padding: "20px !important",
+          padding: "20px 20px 0px 20px !important",
           "&.MuiDialog-paper": { margin: "0px", padding: "24px" },
         }}
       >
         {message}
       </DialogContent>
-      <Divider />
       <Box sx={{ textAlign: "center", padding: "16px" }}>
         <Button
           variant="contained"
