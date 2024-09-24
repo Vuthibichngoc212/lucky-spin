@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { getTimeDifference } from "../../utils/get-time-difference";
 import Img from "./../../assets/bg.png";
@@ -26,7 +26,7 @@ import Text from "../../assets/group.svg";
 import EventDialog from "../../components/EventDialog/EventDialog";
 import CRUDModal from "../../components/common/CRUDModal/CRUDModal";
 import CustomTextField from "../../components/common/CustomTextField/CustomTextField";
-import { getPrizes } from "../../data/constant";
+import { getPrizes, voucherList20k, voucherList50k } from "../../data/constant";
 
 const ID = "luckywheel";
 const CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE = 15;
@@ -40,29 +40,21 @@ const LuckySpin: React.FC = () => {
 
   const [count, setCount] = useState<number>(0);
 
-  // Trạng thái quản lý xem vòng quay có đang quay hay không.
   const [spinning, setSpinning] = useState<boolean>(false);
-  //  Số lượt quay còn lại của người chơi.
   const [countSpin, setCountSpin] = useState<number>(1);
-  // Thông tin về phần thưởng sau khi quay
   const [winningResult, setWinningResult] = useState<WinningResultType>({
     name: "",
     img: "",
     voucherCode: "",
   });
-  // Danh sách phần thưởng đã trúng
   const [listPrizeWon, setListPrizeWon] = useState<PrizeWon[]>([]);
-  // Thời gian hiện tại để đo lường thời gian thực hiện
   const [time, setTime] = useState<Dayjs>();
-  // Trạng thái điều khiển hiển thị modal (popup) thông báo trúng thưởng hoặc danh sách phần thưởng đã trúng.
   const [configModal, setConfigModal] = useState<ConfigModal>({
     openModal: false,
     typeModal: "notify",
   });
-  // Quản lý tốc độ quay của kim chỉ vòng quay.
   const [timeNeedleRotate, setTimeNeedleRotate] = useState<number>(0);
 
-  //Chỉ số phần thưởng trúng khi gọi API (nếu dùng).
   const [indexPrizeWon, setIndexPrizeWon] = useState<number | null>(null);
 
   const [isUserInfoValid, setIsUserInfoValid] = useState<boolean>(false);
@@ -98,26 +90,13 @@ const LuckySpin: React.FC = () => {
     fetchPrizes();
   }, []);
 
-  useEffect(() => {
-    if (isUserInfoValid && countSpin > 0) {
-      handleSpin();
-    }
-  }, [isUserInfoValid]);
-
-  const handleSpin = async () => {
+  const handleSpin = useCallback(async () => {
     const today = dayjs().startOf("day").format("YYYY-MM-DD");
 
-    const startDate = dayjs("2024-09-20").startOf("day");
-    const endDate = dayjs("2024-09-27").endOf("day");
+    const endDate = dayjs("2024-09-30").endOf("day");
     const checkDate = dayjs(today).startOf("day");
 
-    if (checkDate.isBefore(startDate)) {
-      setDialogMessage(
-        "Sự kiện chưa bắt đầu. Bạn chỉ có thể quay từ ngày 20/09."
-      );
-      setOpenDialog(true);
-      return;
-    } else if (checkDate.isAfter(endDate)) {
+    if (checkDate.isAfter(endDate)) {
       setDialogMessage("Sự kiện đã kết thúc.");
       setOpenDialog(true);
       return;
@@ -146,22 +125,36 @@ const LuckySpin: React.FC = () => {
       return;
     }
 
-    // Lấy danh sách phần thưởng động
     const availablePrizes = await getPrizes();
 
     setSpinning(true);
     setTime(dayjs());
 
-    // const result = randomIndex(PRIZES);
     const result = randomIndex(availablePrizes);
     setIndexPrizeWon(result);
     setCountSpin((prevState) => prevState - 1);
 
     const prize = availablePrizes[result];
+
+    const getRandomVoucherCode = (voucherList: string[]): string | null => {
+      if (voucherList.length === 0) {
+        return null;
+      }
+
+      const randomIndex = Math.floor(Math.random() * voucherList.length);
+      const voucherCode = voucherList[randomIndex];
+
+      voucherList.splice(randomIndex, 1);
+
+      return voucherCode;
+    };
+
     let voucherCode: string | null = null;
 
-    if (prize.type === "voucher20k" || prize.type === "voucher50k") {
-      voucherCode = `${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    if (prize.type === "voucher50k") {
+      voucherCode = getRandomVoucherCode(voucherList50k);
+    } else if (prize.type === "voucher20k") {
+      voucherCode = getRandomVoucherCode(voucherList20k);
     }
 
     calculateSpin(
@@ -187,7 +180,7 @@ const LuckySpin: React.FC = () => {
       img: prize.img,
       voucherCode: voucherCode || "",
     });
-  };
+  }, [email, isUserInfoValid, phone, styleRotate]);
 
   const alertAfterTransitionEnd = () => {
     const ele = document.getElementById(ID);
@@ -253,6 +246,12 @@ const LuckySpin: React.FC = () => {
       setIndexPrizeWon(null);
     }
   }, [indexPrizeWon, availablePrizes, time]);
+
+  useEffect(() => {
+    if (isUserInfoValid && countSpin > 0) {
+      handleSpin();
+    }
+  }, [isUserInfoValid, countSpin, handleSpin]);
 
   return (
     <Box

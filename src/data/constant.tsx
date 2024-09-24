@@ -73,3 +73,39 @@ export const COLORS = {
   primary_first: "#1A2B57",
   primary_second: "black",
 };
+
+export const voucherList20k = [
+  "VOUCHER20K_1",
+  "VOUCHER20K_2",
+  "VOUCHER20K_3",
+  "VOUCHER20K_4",
+  "VOUCHER20K_5",
+  "VOUCHER20K_6",
+  "VOUCHER20K_7",
+  "VOUCHER20K_8",
+  "VOUCHER20K_9",
+  "VOUCHER20K_10",
+];
+
+export const voucherList50k = [
+  "VOUCHER50K_1",
+  "VOUCHER50K_2",
+  "VOUCHER50K_3",
+  "VOUCHER50K_4",
+  "VOUCHER50K_5",
+  "VOUCHER50K_6",
+  "VOUCHER50K_7",
+  "VOUCHER50K_8",
+  "VOUCHER50K_9",
+  "VOUCHER50K_10",
+  "VOUCHER50K_11",
+  "VOUCHER50K_12",
+  "VOUCHER50K_13",
+  "VOUCHER50K_14",
+  "VOUCHER50K_15",
+  "VOUCHER50K_16",
+  "VOUCHER50K_17",
+  "VOUCHER50K_18",
+  "VOUCHER50K_19",
+  "VOUCHER50K_20",
+];
