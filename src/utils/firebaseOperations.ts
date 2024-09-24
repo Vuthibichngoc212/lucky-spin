@@ -83,9 +83,8 @@ export const checkPrizeAvailabilityBatch = async (prizes: string[]) => {
     const querySnapshots = await Promise.all(queries.map((q) => getDocs(q)));
 
     return querySnapshots.map((snapshot) => snapshot.size);
-  } catch (e) {
-    console.error("Lỗi khi kiểm tra số lượng phần thưởng: ", e);
-    return Array(prizes.length).fill(0); // Return 0s in case of an error
+  } catch {
+    return Array(prizes.length).fill(0);
   }
 };
 
@@ -94,7 +93,7 @@ export const checkTotalPrizeAvailabilityBatch = async (
   maxLimits: number[]
 ) => {
   try {
-    const startDate = dayjs().subtract(7, "day").format("DD/MM/YYYY");
+    const startDate = dayjs().subtract(6, "day").format("DD/MM/YYYY");
     const today = dayjs().format("DD/MM/YYYY");
     const spinRef = collection(db, "spinHistory");
 
@@ -112,8 +111,7 @@ export const checkTotalPrizeAvailabilityBatch = async (
     return querySnapshots.map((snapshot, index) =>
       snapshot.size >= maxLimits[index] ? maxLimits[index] : snapshot.size
     );
-  } catch (e) {
-    console.error("Lỗi khi kiểm tra số lượng phần thưởng trong 7 ngày: ", e);
-    return Array(prizes.length).fill(0); // Return 0s in case of an error
+  } catch {
+    return Array(prizes.length).fill(0);
   }
 };

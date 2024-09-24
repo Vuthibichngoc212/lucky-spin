@@ -92,8 +92,24 @@
     width: 60%;
   }
 }
+@media screen and (max-width: 1024px) and (min-width: 768px) {
+  .img-text {
+    width: 50%;
+  }
+}
 
 @media screen and (min-width: 1280px) and (max-width: 1920px) {
+  .img-text {
+    width: 25%;
+  }
+}
+@media screen and (max-width: 436px) and (min-width: 334px) {
+  .img-text {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 600px) {
   .img-text {
     width: 25%;
   }

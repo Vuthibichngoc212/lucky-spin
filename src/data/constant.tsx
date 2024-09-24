@@ -44,7 +44,7 @@ export const getPrizes = async () => {
     {
       name: "Voucher 50k",
       img: TuiVang,
-      percentpage: voucher50k < 3 && totalVoucher50k < 20 ? 10 : 0,
+      percentpage: voucher50k < 4 && totalVoucher50k < 20 ? 10 : 0,
       type: "voucher50k",
     },
     {
@@ -62,7 +62,7 @@ export const getPrizes = async () => {
     {
       name: "Toner Eveline Magma",
       img: TonerEveline,
-      percentpage: tonerCount < 4 && totalToner < 30 ? 15 : 0,
+      percentpage: tonerCount < 5 && totalToner < 30 ? 15 : 0,
       type: "toner",
     },
   ];

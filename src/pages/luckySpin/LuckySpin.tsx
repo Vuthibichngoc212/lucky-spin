@@ -256,7 +256,7 @@ const LuckySpin: React.FC = () => {
   return (
     <Box
       style={{
-        height: "120vh",
+        height: "100vh",
         backgroundImage: `url(${Img})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
