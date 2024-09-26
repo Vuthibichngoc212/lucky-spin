@@ -13,8 +13,8 @@ export const getPrizes = async () => {
     checkTotalPrizeAvailabilityBatch(prizeNames, maxLimits),
   ]);
 
-  const [voucher50k, voucher20k, tonerCount] = prizeAvailability;
-  const [totalVoucher50k, totalVoucher20k, totalToner] = totalPrizeAvailability;
+  const [tonerCount] = prizeAvailability;
+  const [totalToner] = totalPrizeAvailability;
 
   const PRIZES = [
     {
@@ -38,19 +38,21 @@ export const getPrizes = async () => {
     {
       name: "Chúc bạn may mắn lần sau",
       img: BetterLuck,
-      percentpage: 70,
+      percentpage: 95,
       type: "betterLuck",
     },
     {
       name: "Voucher 50k",
       img: TuiVang,
-      percentpage: voucher50k < 4 && totalVoucher50k < 20 ? 10 : 0,
+      // percentpage: voucher50k < 4 && totalVoucher50k < 20 ? 10 : 0,
+      percentpage: 0,
       type: "voucher50k",
     },
     {
       name: "Voucher 20k",
       img: TuiVang,
-      percentpage: voucher20k < 1 && totalVoucher20k < 10 ? 5 : 0,
+      // percentpage: voucher20k < 1 && totalVoucher20k < 10 ? 5 : 0,
+      percentpage: 0,
       type: "voucher20k",
     },
     {
@@ -62,7 +64,7 @@ export const getPrizes = async () => {
     {
       name: "Toner Eveline Magma",
       img: TonerEveline,
-      percentpage: tonerCount < 5 && totalToner < 30 ? 15 : 0,
+      percentpage: tonerCount < 5 && totalToner < 30 ? 5 : 0,
       type: "toner",
     },
   ];
