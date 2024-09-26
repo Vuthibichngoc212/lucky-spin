@@ -13,8 +13,8 @@ export const getPrizes = async () => {
     checkTotalPrizeAvailabilityBatch(prizeNames, maxLimits),
   ]);
 
-  const [voucher50k, voucher20k, tonerCount] = prizeAvailability;
-  const [totalVoucher50k, totalVoucher20k, totalToner] = totalPrizeAvailability;
+  const [tonerCount] = prizeAvailability;
+  const [totalToner] = totalPrizeAvailability;
 
   const PRIZES = [
     {
