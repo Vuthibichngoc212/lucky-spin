@@ -1,20 +1,20 @@
 import { ImgIp16, Voucher, TonerEveline, BetterLuck, TuiVang } from "../assets";
-import {
-  checkPrizeAvailabilityBatch,
-  checkTotalPrizeAvailabilityBatch,
-} from "../utils/firebaseOperations";
+// import {
+//   checkPrizeAvailabilityBatch,
+//   checkTotalPrizeAvailabilityBatch,
+// } from "../utils/firebaseOperations";
 
 export const getPrizes = async () => {
-  const prizeNames = ["Voucher 50k", "Voucher 20k", "Toner Eveline Magma"];
-  const maxLimits = [20, 10, 30];
+  // const prizeNames = ["Voucher 50k", "Voucher 20k", "Toner Eveline Magma"];
+  // const maxLimits = [20, 10, 30];
 
-  const [prizeAvailability, totalPrizeAvailability] = await Promise.all([
-    checkPrizeAvailabilityBatch(prizeNames),
-    checkTotalPrizeAvailabilityBatch(prizeNames, maxLimits),
-  ]);
+  // const [prizeAvailability, totalPrizeAvailability] = await Promise.all([
+  //   checkPrizeAvailabilityBatch(prizeNames),
+  //   checkTotalPrizeAvailabilityBatch(prizeNames, maxLimits),
+  // ]);
 
-  const [tonerCount] = prizeAvailability;
-  const [totalToner] = totalPrizeAvailability;
+  // const [voucher20k, voucher50k] = prizeAvailability;
+  // const [totalVoucher20k, totalVoucher50k] = totalPrizeAvailability;
 
   const PRIZES = [
     {
@@ -38,20 +38,20 @@ export const getPrizes = async () => {
     {
       name: "Chúc bạn may mắn lần sau",
       img: BetterLuck,
-      percentpage: 95,
+      percentpage: 100,
       type: "betterLuck",
     },
     {
       name: "Voucher 50k",
       img: TuiVang,
-      // percentpage: voucher50k < 4 && totalVoucher50k < 20 ? 10 : 0,
+      // percentpage: voucher50k < 4 && totalVoucher50k < 20 ? 7 : 0,
       percentpage: 0,
       type: "voucher50k",
     },
     {
       name: "Voucher 20k",
       img: TuiVang,
-      // percentpage: voucher20k < 1 && totalVoucher20k < 10 ? 5 : 0,
+      // percentpage: voucher20k < 1 && totalVoucher20k < 10 ? 3 : 0,
       percentpage: 0,
       type: "voucher20k",
     },
@@ -64,7 +64,8 @@ export const getPrizes = async () => {
     {
       name: "Toner Eveline Magma",
       img: TonerEveline,
-      percentpage: tonerCount < 5 && totalToner < 30 ? 5 : 0,
+      // percentpage: tonerCount < 5 && totalToner < 30 ? 5 : 0,
+      percentpage: 0,
       type: "toner",
     },
   ];
@@ -77,37 +78,32 @@ export const COLORS = {
 };
 
 export const voucherList20k = [
-  "VOUCHER20K_1",
-  "VOUCHER20K_2",
-  "VOUCHER20K_3",
-  "VOUCHER20K_4",
-  "VOUCHER20K_5",
-  "VOUCHER20K_6",
-  "VOUCHER20K_7",
-  "VOUCHER20K_8",
-  "VOUCHER20K_9",
-  "VOUCHER20K_10",
+  "VCBTJNA20K",
+  "VC5GQQC20K",
+  "VC1MG3820K",
+  "VC79GWM20K",
+  "VCJAH2J20K",
+  "VCTQJEF20K",
+  "VC7NNIO20K",
+  "VCE3GF920K",
+  "VCOSWW420K",
 ];
 
 export const voucherList50k = [
-  "VOUCHER50K_1",
-  "VOUCHER50K_2",
-  "VOUCHER50K_3",
-  "VOUCHER50K_4",
-  "VOUCHER50K_5",
-  "VOUCHER50K_6",
-  "VOUCHER50K_7",
-  "VOUCHER50K_8",
-  "VOUCHER50K_9",
-  "VOUCHER50K_10",
-  "VOUCHER50K_11",
-  "VOUCHER50K_12",
-  "VOUCHER50K_13",
-  "VOUCHER50K_14",
-  "VOUCHER50K_15",
-  "VOUCHER50K_16",
-  "VOUCHER50K_17",
-  "VOUCHER50K_18",
-  "VOUCHER50K_19",
-  "VOUCHER50K_20",
+  "VCC8XNT50K",
+  "VCH7HXN50K",
+  "VCMIOXK50K",
+  "VCP38MC50K",
+  "VC5TE9V50K",
+  "VCJHRU250K",
+  "VCUVPQK50K",
+  "VCCUXPY50K",
+  "VCD7V0X50K",
+  "VCUI7YD50K",
+  "VCNTE5Z50K",
+  "VCJJAD650K",
+  "VCI0AHX50K",
+  "VCRXM6B50K",
+  "VCJA3IN50K",
+  "VCODILK50K",
 ];
