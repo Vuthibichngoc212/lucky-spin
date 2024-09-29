@@ -100,7 +100,7 @@
 
 @media screen and (min-width: 1280px) and (max-width: 1920px) {
   .img-text {
-    width: 25%;
+    width: 20%;
   }
 }
 @media screen and (max-width: 436px) and (min-width: 334px) {

@@ -1,7 +1,22 @@
 import { db } from "../firebaseConfig";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import dayjs from "dayjs";
 import { SpinAvailability, UserData } from "../types";
+
+export interface Voucher {
+  id: string;
+  code: string;
+  type: string;
+  isUsed: boolean;
+}
 
 export const addUser = async (data: UserData) => {
   try {
@@ -113,5 +128,40 @@ export const checkTotalPrizeAvailabilityBatch = async (
     );
   } catch {
     return Array(prizes.length).fill(0);
+  }
+};
+
+export const getAvailableVoucher = async (
+  type: string
+): Promise<Voucher | null> => {
+  try {
+    const voucherRef = collection(db, "vouchers");
+    const q = query(
+      voucherRef,
+      where("type", "==", type),
+      where("isUsed", "==", false)
+    );
+
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const voucherDoc = querySnapshot.docs[0]; // Lấy mã voucher đầu tiên
+      const voucherData = voucherDoc.data();
+      return { id: voucherDoc.id, ...voucherData } as Voucher;
+    }
+    return null; // Không có voucher khả dụng
+  } catch (e) {
+    console.error("Error getting available voucher: ", e);
+    return null;
+  }
+};
+
+export const markVoucherAsUsed = async (voucherId: string): Promise<void> => {
+  try {
+    const voucherDocRef = doc(db, "vouchers", voucherId);
+    await updateDoc(voucherDocRef, {
+      isUsed: true,
+    });
+  } catch (e) {
+    console.error("Error marking voucher as used: ", e);
   }
 };

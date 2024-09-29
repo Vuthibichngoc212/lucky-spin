@@ -7,6 +7,8 @@ import {
   addUser,
   addUserSpinDate,
   checkSpinAvailability,
+  getAvailableVoucher,
+  markVoucherAsUsed,
 } from "../../utils/firebaseOperations";
 import { calculateSpin, Prize, randomIndex } from "../../utils/spinLogic";
 import { validationSchema } from "../../helpers/validationSchema";
@@ -26,7 +28,7 @@ import Text from "../../assets/group.svg";
 import EventDialog from "../../components/EventDialog/EventDialog";
 import CRUDModal from "../../components/common/CRUDModal/CRUDModal";
 import CustomTextField from "../../components/common/CustomTextField/CustomTextField";
-import { getPrizes, voucherList20k, voucherList50k } from "../../data/constant";
+import { getPrizes } from "../../data/constant";
 
 const ID = "luckywheel";
 const CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE = 15;
@@ -136,25 +138,16 @@ const LuckySpin: React.FC = () => {
 
     const prize = availablePrizes[result];
 
-    const getRandomVoucherCode = (voucherList: string[]): string | null => {
-      if (voucherList.length === 0) {
-        return null;
-      }
-
-      const randomIndex = Math.floor(Math.random() * voucherList.length);
-      const voucherCode = voucherList[randomIndex];
-
-      voucherList.splice(randomIndex, 1);
-
-      return voucherCode;
-    };
-
     let voucherCode: string | null = null;
 
-    if (prize.type === "voucher50k") {
-      voucherCode = getRandomVoucherCode(voucherList50k);
-    } else if (prize.type === "voucher20k") {
-      voucherCode = getRandomVoucherCode(voucherList20k);
+    if (prize.type.startsWith("voucher")) {
+      const availableVoucher = await getAvailableVoucher(prize.type);
+      if (availableVoucher) {
+        voucherCode = availableVoucher.code;
+        await markVoucherAsUsed(availableVoucher.id);
+      } else {
+        console.log(`No available voucher of type ${prize.type}`);
+      }
     }
 
     calculateSpin(
