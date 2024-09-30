@@ -1,20 +1,20 @@
 import { ImgIp16, Voucher, TonerEveline, BetterLuck, TuiVang } from "../assets";
-import {
-  checkPrizeAvailabilityBatch,
-  checkTotalPrizeAvailabilityBatch,
-} from "../utils/firebaseOperations";
+// import {
+//   checkPrizeAvailabilityBatch,
+//   checkTotalPrizeAvailabilityBatch,
+// } from "../utils/firebaseOperations";
 
 export const getPrizes = async () => {
-  const prizeNames = ["Voucher 50k", "Voucher 20k", "Toner Eveline Magma"];
-  const maxLimits = [20, 10, 30];
+  // const prizeNames = ["Voucher 50k", "Voucher 20k", "Toner Eveline Magma"];
+  // const maxLimits = [20, 10, 30];
 
-  const [prizeAvailability, totalPrizeAvailability] = await Promise.all([
-    checkPrizeAvailabilityBatch(prizeNames),
-    checkTotalPrizeAvailabilityBatch(prizeNames, maxLimits),
-  ]);
+  // const [prizeAvailability, totalPrizeAvailability] = await Promise.all([
+  //   checkPrizeAvailabilityBatch(prizeNames),
+  //   checkTotalPrizeAvailabilityBatch(prizeNames, maxLimits),
+  // ]);
 
-  const [voucher50k, tonerCount] = prizeAvailability;
-  const [totalVoucher50k, totalToner] = totalPrizeAvailability;
+  // const [voucher50k, tonerCount] = prizeAvailability;
+  // const [totalVoucher50k, totalToner] = totalPrizeAvailability;
 
   const PRIZES = [
     {
@@ -38,13 +38,14 @@ export const getPrizes = async () => {
     {
       name: "Chúc bạn may mắn lần sau",
       img: BetterLuck,
-      percentpage: 80,
+      percentpage: 100,
       type: "betterLuck",
     },
     {
       name: "Voucher 50k",
       img: TuiVang,
-      percentpage: voucher50k < 4 && totalVoucher50k < 20 ? 10 : 0,
+      // percentpage: voucher50k < 4 && totalVoucher50k < 20 ? 10 : 0,
+      percentpage: 0,
       type: "voucher50k",
     },
     {
@@ -63,7 +64,8 @@ export const getPrizes = async () => {
     {
       name: "Toner Eveline Magma",
       img: TonerEveline,
-      percentpage: tonerCount < 5 && totalToner < 30 ? 10 : 0,
+      // percentpage: tonerCount < 5 && totalToner < 30 ? 10 : 0,
+      percentpage: 0,
       type: "toner",
     },
   ];
